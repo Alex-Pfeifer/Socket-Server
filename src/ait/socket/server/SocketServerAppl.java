@@ -13,7 +13,6 @@ public class SocketServerAppl {
     public static void main(String[] args) {
         int port = 1337;
         try (ServerSocket serverSocket = new ServerSocket(port)){
-
                 System.out.println("Server waiting...");
                 Socket socket = serverSocket.accept();
                 System.out.println("Connection established");
@@ -22,12 +21,16 @@ public class SocketServerAppl {
                 PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), true);
                 while (true){
                     String message = socketReader.readLine();
+                    if (message == null){
+                        System.out.println("Connection: " + socket.getInetAddress() + " : " + socket.getPort() + " closed");
+                        break;
+                    }
                     System.out.println("Server received: " + message);
                     socketWriter.println(message + " " + LocalTime.now().format(DateTimeFormatter.ofPattern("hh.mm.ss")));
                 }
-
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Connection closed");
+//            e.printStackTrace();
         }
     }
 }
